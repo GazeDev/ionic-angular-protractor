@@ -1,0 +1,32 @@
+version: '3'
+services:
+  init:
+    build: .
+    hostname: boilerplate
+    command: tail -f /dev/null
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "4200:4200"
+  app:
+    build: .
+    hostname: boilerplate
+    command: ["npm", "run", "start", "--", "--host=0.0.0.0"]
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "4200:4200"
+  surge:
+    build: .
+    hostname: app
+    command: ./surge-deploy.sh
+    env_file:
+      - variables.env
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+networks:
+  default:
+    driver: bridge
